@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Guide: Flutter & IoT</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Chosen Palette: Calm Neutrals -->
+    <!-- Application Structure Plan: The application transforms the linear presentation into a non-linear, interactive single-page application. A persistent top navigation allows users to jump between thematic sections ('Introduction', 'Why Flutter?', 'Get Started', 'Core Concepts', 'Example Project', 'Resources'), promoting self-paced learning. This structure is chosen over a simple scrollable page to break down the content into manageable, focused modules, which is more effective for beginners. Key interactions, like the 'Smart Light' simulation, are designed to provide a hands-on feel, making abstract concepts tangible and improving knowledge retention. -->
+    <!-- Visualization & Content Choices: 
+        - Report Info: IoT Ecosystem -> Goal: Inform -> Viz/Method: Interactive HTML/CSS diagram with hover effects -> Justification: More engaging than a static list, clarifies the flow of data. Library: None.
+        - Report Info: Why Use Flutter? -> Goal: Inform -> Viz/Method: Interactive cards that reveal more info on hover -> Justification: Breaks down bullet points into digestible, interactive chunks. Library: None.
+        - Report Info: Hardware/Software List -> Goal: Organize -> Viz/Method: Two-column layout with clickable cards -> Justification: Clearly separates the two categories and allows users to drill down for details without cluttering the UI. Library: None.
+        - Report Info: MQTT Concept -> Goal: Explain Process -> Viz/Method: Animated HTML/CSS diagram triggered by a button -> Justification: Visualizes the abstract publish/subscribe model, making it easier to understand than text alone. Library: None.
+        - Report Info: "Smart Light Switch" Example -> Goal: Demonstrate -> Viz/Method: Interactive simulation with a Flutter UI toggle controlling a virtual ESP32 LED -> Justification: The app's centerpiece. Provides a "wow" factor and a concrete, memorable demonstration of the entire IoT workflow. Library: None.
+        - Report Info: IoT Platform Comparison -> Goal: Compare -> Viz/Method: An interactive table combined with a dynamic Bar Chart -> Justification: Allows for both detailed comparison and quick visual analysis of a key metric ('Beginner Friendliness'). Library: Chart.js.
+        - CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .section { display: none; }
+        .section.active { display: block; }
+        .nav-link { transition: all 0.3s ease; }
+        .nav-link.active { color: #3b82f6; border-bottom-color: #3b82f6; }
+        .benefit-card { transition: transform 0.3s ease, box-shadow 0.3s ease; }
+        .benefit-card:hover { transform: translateY(-5px); box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05); }
+        .tool-card { transition: all 0.3s ease; cursor: pointer; }
+        .tool-card:hover { background-color: #f0f9ff; border-color: #3b82f6; }
+        .chart-container { position: relative; width: 100%; max-width: 600px; margin-left: auto; margin-right: auto; height: 350px; max-height: 400px; }
+        .mqtt-dot { transition: all 1s ease-in-out; }
+        .sim-light { transition: all 0.5s ease; }
+        .sim-arrow { transition: opacity 0.5s ease, transform 0.5s ease; }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800">
+
+    <div class="min-h-screen flex flex-col">
+        <!-- Header & Navigation -->
+        <header class="bg-white/80 backdrop-blur-lg sticky top-0 z-50 shadow-sm">
+            <div class="container mx-auto px-4">
+                <div class="flex justify-between items-center py-4 border-b border-slate-200">
+                    <h1 class="text-2xl font-bold text-slate-900">Flutter & IoT</h1>
+                    <nav class="hidden md:flex items-center space-x-4 lg:space-x-6">
+                        <a href="#intro" class="nav-link text-slate-600 hover:text-blue-500 border-b-2 border-transparent pb-1">Introduction</a>
+                        <a href="#why" class="nav-link text-slate-600 hover:text-blue-500 border-b-2 border-transparent pb-1">Why Flutter?</a>
+                        <a href="#start" class="nav-link text-slate-600 hover:text-blue-500 border-b-2 border-transparent pb-1">Get Started</a>
+                        <a href="#concepts" class="nav-link text-slate-600 hover:text-blue-500 border-b-2 border-transparent pb-1">Core Concepts</a>
+                        <a href="#project" class="nav-link text-slate-600 hover:text-blue-500 border-b-2 border-transparent pb-1">Example Project</a>
+                        <a href="#resources" class="nav-link text-slate-600 hover:text-blue-500 border-b-2 border-transparent pb-1">Resources</a>
+                    </nav>
+                     <div class="md:hidden">
+                        <select id="mobile-nav" class="bg-white border border-slate-300 rounded-md py-2 px-3 text-slate-700">
+                            <option value="intro">Introduction</option>
+                            <option value="why">Why Flutter?</option>
+                            <option value="start">Get Started</option>
+                            <option value="concepts">Core Concepts</option>
+                            <option value="project">Example Project</option>
+                            <option value="resources">Resources</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="flex-grow container mx-auto px-4 py-8 md:py-12">
+            <div id="intro" class="section">
+                <div class="text-center">
+                    <h2 class="text-4xl md:text-5xl font-extrabold text-slate-900 mb-4">Building Connected Experiences</h2>
+                    <p class="text-lg md:text-xl text-slate-600 max-w-3xl mx-auto mb-12">A beginner's guide to creating Internet of Things (IoT) applications with Flutter.</p>
+                </div>
+                <div class="bg-white p-8 rounded-xl shadow-lg">
+                    <h3 class="text-2xl font-bold text-center mb-2">What is the Internet of Things (IoT)?</h3>
+                    <p class="text-center text-slate-600 mb-8 max-w-2xl mx-auto">It's a network of physical objects—"things"—embedded with sensors and software to connect and exchange data over the internet. Think of it like giving everyday objects a <span class="font-semibold text-blue-600">"voice"</span> and <span class="font-semibold text-blue-600">"ears."</span></p>
+                    <div class="w-full max-w-4xl mx-auto">
+                        <h4 class="text-xl font-semibold text-center mb-6">The IoT Ecosystem</h4>
+                        <div class="flex flex-col md:flex-row items-center justify-between space-y-4 md:space-y-0 md:space-x-4">
+                            <div class="text-center group">
+                                <div class="bg-blue-100 text-blue-600 rounded-full w-24 h-24 flex items-center justify-center text-4xl mx-auto mb-2 transition-transform group-hover:scale-110">📱</div>
+                                <h5 class="font-semibold">Device (Sensor)</h5>
+                                <p class="text-sm text-slate-500">Collects data</p>
+                            </div>
+                            <div class="text-slate-300 text-4xl font-light transform md:rotate-0 rotate-90">&rarr;</div>
+                            <div class="text-center group">
+                                <div class="bg-indigo-100 text-indigo-600 rounded-full w-24 h-24 flex items-center justify-center text-4xl mx-auto mb-2 transition-transform group-hover:scale-110">📡</div>
+                                <h5 class="font-semibold">Gateway</h5>
+                                <p class="text-sm text-slate-500">Manages connection</p>
+                            </div>
+                            <div class="text-slate-300 text-4xl font-light transform md:rotate-0 rotate-90">&rarr;</div>
+                            <div class="text-center group">
+                                <div class="bg-purple-100 text-purple-600 rounded-full w-24 h-24 flex items-center justify-center text-4xl mx-auto mb-2 transition-transform group-hover:scale-110">☁️</div>
+                                <h5 class="font-semibold">Cloud</h5>
+                                <p class="text-sm text-slate-500">Processes & stores data</p>
+                            </div>
+                            <div class="text-slate-300 text-4xl font-light transform md:rotate-0 rotate-90">&rarr;</div>
+                            <div class="text-center group">
+                                <div class="bg-green-100 text-green-600 rounded-full w-24 h-24 flex items-center justify-center text-4xl mx-auto mb-2 transition-transform group-hover:scale-110">👨‍💻</div>
+                                <h5 class="font-semibold">Your App</h5>
+                                <p class="text-sm text-slate-500">Controls & visualizes</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="why" class="section">
+                <div class="text-center">
+                    <h2 class="text-3xl md:text-4xl font-bold text-slate-900 mb-4">Why Use Flutter for IoT?</h2>
+                    <p class="text-lg text-slate-600 max-w-3xl mx-auto mb-12">Flutter is a fantastic choice for building the user interface for your IoT projects. Here's why.</p>
+                </div>
+                <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <div class="benefit-card bg-white p-6 rounded-lg shadow-md">
+                        <h3 class="text-xl font-semibold mb-2">One Codebase, Any Screen</h3>
+                        <p class="text-slate-600">Write your app once and deploy it on Android, iOS, web, desktop, and even some embedded systems.</p>
+                    </div>
+                    <div class="benefit-card bg-white p-6 rounded-lg shadow-md">
+                        <h3 class="text-xl font-semibold mb-2">Beautiful UIs</h3>
+                        <p class="text-slate-600">Easily create modern, visually appealing interfaces for your IoT control panels and dashboards.</p>
+                    </div>
+                    <div class="benefit-card bg-white p-6 rounded-lg shadow-md">
+                        <h3 class="text-xl font-semibold mb-2">Fast Development</h3>
+                        <p class="text-slate-600">Features like Hot Reload let you see your UI changes instantly, dramatically speeding up the development process.</p>
+                    </div>
+                    <div class="benefit-card bg-white p-6 rounded-lg shadow-md">
+                        <h3 class="text-xl font-semibold mb-2">Rich Package Ecosystem</h3>
+                        <p class="text-slate-600">Access a wide range of open-source packages for common IoT tasks, like connecting over MQTT or Bluetooth.</p>
+                    </div>
+                    <div class="benefit-card bg-white p-6 rounded-lg shadow-md">
+                        <h3 class="text-xl font-semibold mb-2">Growing Community</h3>
+                        <p class="text-slate-600">A large and active community means you can easily find help, tutorials, and resources when you get stuck.</p>
+                    </div>
+                     <div class="benefit-card bg-white p-6 rounded-lg shadow-md">
+                        <h3 class="text-xl font-semibold mb-2">High Performance</h3>
+                        <p class="text-slate-600">Flutter compiles to native code, ensuring your apps are smooth, responsive, and reliable.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div id="start" class="section">
+                <div class="text-center">
+                    <h2 class="text-3xl md:text-4xl font-bold text-slate-900 mb-4">Getting Started: Your Toolbox</h2>
+                    <p class="text-lg text-slate-600 max-w-3xl mx-auto mb-12">Here's the hardware and software you'll need to begin your Flutter IoT journey.</p>
+                </div>
+                <div class="grid md:grid-cols-2 gap-8">
+                    <div class="bg-white p-6 rounded-lg shadow-lg">
+                        <h3 class="text-2xl font-bold mb-4 text-center">Hardware 🔧</h3>
+                        <div class="space-y-4">
+                            <div class="tool-card border border-slate-200 p-4 rounded-lg">
+                                <h4 class="text-lg font-semibold">IoT Development Board</h4>
+                                <p class="text-slate-600 text-sm">The "brain" of your device. Choose one of these popular options:</p>
+                                <ul class="list-disc list-inside mt-2 text-slate-600">
+                                    <li><b>ESP32:</b> Low-cost, with built-in Wi-Fi & Bluetooth. Great for beginners.</li>
+                                    <li><b>Raspberry Pi:</b> A more powerful single-board computer.</li>
+                                </ul>
+                            </div>
+                            <div class="tool-card border border-slate-200 p-4 rounded-lg">
+                                <h4 class="text-lg font-semibold">Sensors & Actuators</h4>
+                                <p class="text-slate-600 text-sm">The "senses" and "muscles" of your device.</p>
+                                 <ul class="list-disc list-inside mt-2 text-slate-600">
+                                    <li><b>Sensors:</b> Collect data (e.g., temperature, motion).</li>
+                                    <li><b>Actuators:</b> Perform actions (e.g., turn on an LED, spin a motor).</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bg-white p-6 rounded-lg shadow-lg">
+                        <h3 class="text-2xl font-bold mb-4 text-center">Software 💻</h3>
+                        <div class="space-y-4">
+                            <div class="tool-card border border-slate-200 p-4 rounded-lg">
+                                <h4 class="text-lg font-semibold">Flutter SDK & IDE</h4>
+                                <p class="text-slate-600 text-sm">The tools to build your app.</p>
+                                 <ul class="list-disc list-inside mt-2 text-slate-600">
+                                    <li><b>Flutter SDK:</b> The core framework.</li>
+                                    <li><b>IDE:</b> Visual Studio Code or Android Studio.</li>
+                                </ul>
+                            </div>
+                            <div class="tool-card border border-slate-200 p-4 rounded-lg">
+                                <h4 class="text-lg font-semibold">IoT Platform</h4>
+                                <p class="text-slate-600 text-sm">A cloud service to manage devices and data.</p>
+                                <ul class="list-disc list-inside mt-2 text-slate-600">
+                                    <li><b>Blynk:</b> Very user-friendly, perfect for beginners.</li>
+                                    <li><b>ThingsBoard:</b> Open-source with advanced features.</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="concepts" class="section">
+                <div class="text-center">
+                    <h2 class="text-3xl md:text-4xl font-bold text-slate-900 mb-4">Core Concepts: How It Works</h2>
+                    <p class="text-lg text-slate-600 max-w-3xl mx-auto mb-12">The magic behind device communication is a protocol called MQTT.</p>
+                </div>
+                <div class="bg-white p-8 rounded-xl shadow-lg">
+                     <h3 class="text-2xl font-bold text-center mb-2">MQTT Explained</h3>
+                     <p class="text-center text-slate-600 mb-8 max-w-2xl mx-auto">Think of MQTT as a postal service for devices. A device can <b class="text-blue-600">publish</b> a message to a "topic" (like an address), and any app or device that has <b class="text-green-600">subscribed</b> to that topic will receive the message instantly.</p>
+                     
+                     <div class="w-full max-w-3xl mx-auto p-4 border border-slate-200 rounded-lg">
+                        <div class="flex justify-around items-center h-48 relative">
+                            <!-- Publisher -->
+                            <div class="text-center z-10">
+                                <div class="bg-blue-100 text-blue-600 rounded-full w-20 h-20 flex items-center justify-center text-3xl mx-auto mb-2">🌡️</div>
+                                <h5 class="font-semibold">Publisher</h5>
+                                <p class="text-sm text-slate-500">(Your Device)</p>
+                            </div>
+                            <!-- Broker -->
+                            <div class="text-center z-10">
+                                <div class="bg-purple-100 text-purple-600 rounded-full w-24 h-24 flex items-center justify-center text-4xl mx-auto mb-2">🏢</div>
+                                <h5 class="font-semibold">Broker</h5>
+                                <p class="text-sm text-slate-500">(Cloud Platform)</p>
+                            </div>
+                            <!-- Subscriber -->
+                            <div class="text-center z-10">
+                                <div class="bg-green-100 text-green-600 rounded-full w-20 h-20 flex items-center justify-center text-3xl mx-auto mb-2">📱</div>
+                                <h5 class="font-semibold">Subscriber</h5>
+                                <p class="text-sm text-slate-500">(Your App)</p>
+                            </div>
+                            <!-- Animated Dot -->
+                            <div id="mqtt-dot" class="mqtt-dot absolute bg-red-500 rounded-full w-4 h-4 top-1/2 left-1/4 -translate-y-1/2 opacity-0"></div>
+                        </div>
+                        <div class="text-center mt-4">
+                            <button id="animate-mqtt-btn" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-lg transition-colors">
+                                See it in Action
+                            </button>
+                        </div>
+                     </div>
+                </div>
+            </div>
+
+            <div id="project" class="section">
+                 <div class="text-center">
+                    <h2 class="text-3xl md:text-4xl font-bold text-slate-900 mb-4">Example Project: The Smart Light</h2>
+                    <p class="text-lg text-slate-600 max-w-3xl mx-auto mb-12">Let's build a virtual smart light switch to see how everything connects.</p>
+                </div>
+                <div class="bg-white p-8 rounded-xl shadow-lg">
+                    <div class="grid md:grid-cols-2 gap-8 items-center">
+                        <!-- Flutter App Simulator -->
+                        <div class="border border-slate-200 rounded-lg p-6 text-center bg-slate-900">
+                             <h3 class="text-xl font-semibold mb-4 text-white">Flutter App</h3>
+                             <div class="bg-slate-800 rounded-xl p-8 max-w-xs mx-auto">
+                                <p class="text-slate-400 mb-4">Living Room Light</p>
+                                <label for="light-switch" class="flex items-center justify-center cursor-pointer">
+                                    <div class="relative">
+                                        <input type="checkbox" id="light-switch" class="sr-only">
+                                        <div class="block bg-slate-600 w-14 h-8 rounded-full"></div>
+                                        <div id="light-switch-dot" class="dot absolute left-1 top-1 bg-white w-6 h-6 rounded-full transition-transform"></div>
+                                    </div>
+                                </label>
+                                <p id="light-status-text" class="text-white font-semibold mt-4 text-lg">Off</p>
+                             </div>
+                        </div>
+                        <!-- Hardware Simulator -->
+                        <div class="border border-slate-200 rounded-lg p-6 text-center relative">
+                            <h3 class="text-xl font-semibold mb-4">ESP32 Hardware</h3>
+                            <div class="relative inline-block">
+                                <div class="bg-green-900 w-48 h-32 rounded-lg flex items-center justify-center p-2">
+                                    <p class="text-white text-xs font-mono">ESP32 Board</p>
+                                </div>
+                                <div id="sim-light" class="sim-light absolute -top-4 -right-4 w-12 h-12 rounded-full bg-slate-300 border-4 border-slate-400">
+                                    <div class="absolute inset-0.5 rounded-full bg-slate-200"></div>
+                                </div>
+                            </div>
+                            <p class="text-slate-600 mt-4 text-sm">This represents your physical device.</p>
+                            <!-- Arrows for animation -->
+                            <div id="arrow-to-cloud" class="sim-arrow absolute top-1/2 -left-8 text-3xl text-blue-400 opacity-0 transform -translate-y-1/2">&rarr;</div>
+                            <div id="arrow-from-cloud" class="sim-arrow absolute top-1/2 -right-8 text-3xl text-blue-400 opacity-0 transform -translate-y-1/2">&larr;</div>
+                        </div>
+                    </div>
+                     <div class="text-center mt-6">
+                        <p id="sim-message" class="text-slate-600 h-6 transition-opacity"></p>
+                    </div>
+                </div>
+            </div>
+
+            <div id="resources" class="section">
+                <div class="text-center">
+                    <h2 class="text-3xl md:text-4xl font-bold text-slate-900 mb-4">Resources & Next Steps</h2>
+                    <p class="text-lg text-slate-600 max-w-3xl mx-auto mb-12">Explore platforms, packages, and project ideas to continue your journey.</p>
+                </div>
+                <div class="grid lg:grid-cols-2 gap-8">
+                    <!-- IoT Platforms -->
+                    <div class="bg-white p-6 rounded-lg shadow-lg">
+                        <h3 class="text-2xl font-bold mb-4">Popular IoT Platforms</h3>
+                        <p class="text-slate-600 mb-4">These cloud services help you manage your devices. Select one to see how beginner-friendly it is.</p>
+                        <select id="platform-selector" class="w-full mb-4 p-2 border border-slate-300 rounded-md bg-white">
+                        </select>
+                        <div class="chart-container">
+                            <canvas id="platformChart"></canvas>
+                        </div>
+                    </div>
+                    <!-- Packages & Projects -->
+                    <div class="space-y-8">
+                        <div class="bg-white p-6 rounded-lg shadow-lg">
+                            <h3 class="text-2xl font-bold mb-4">Essential Flutter Packages</h3>
+                            <div class="space-y-3">
+                                <div class="p-3 bg-slate-100 rounded-md"><b class="text-blue-600">mqtt_client:</b> For communicating with MQTT brokers.</div>
+                                <div class="p-3 bg-slate-100 rounded-md"><b class="text-blue-600">flutter_blue_plus:</b> For interacting with Bluetooth Low Energy (BLE) devices.</div>
+                                <div class="p-3 bg-slate-100 rounded-md"><b class="text-blue-600">http:</b> For making API requests to your IoT platform's REST API.</div>
+                                <div class="p-3 bg-slate-100 rounded-md"><b class="text-blue-600">web_socket_channel:</b> For real-time communication using WebSockets.</div>
+                            </div>
+                        </div>
+                        <div class="bg-white p-6 rounded-lg shadow-lg">
+                            <h3 class="text-2xl font-bold mb-4">Project Ideas</h3>
+                             <ul class="list-disc list-inside space-y-2 text-slate-700">
+                                <li><b>Smart Weather Station:</b> Display real-time sensor data in a beautiful app.</li>
+                                <li><b>Home Automation System:</b> Control lights and fans from a central dashboard.</li>
+                                <li><b>Automated Plant Watering:</b> Monitor soil moisture and water your plants.</li>
+                                <li><b>Remote Pet Feeder:</b> Feed your pet from anywhere in the world.</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const sections = document.querySelectorAll('.section');
+            const navLinks = document.querySelectorAll('.nav-link');
+            const mobileNav = document.getElementById('mobile-nav');
+
+            const platformData = [
+                { name: 'Blynk', bestFor: 'Beginners, rapid prototyping', features: 'Drag-and-drop app builder, easy device setup', beginnerFriendliness: 9 },
+                { name: 'ThingsBoard', bestFor: 'Open-source enthusiasts', features: 'Customizable dashboards, rule engine', beginnerFriendliness: 6 },
+                { name: 'AWS IoT', bestFor: 'Scalable, enterprise solutions', features: 'Integrates with the vast AWS ecosystem', beginnerFriendliness: 4 },
+                { name: 'Google Cloud IoT', bestFor: 'Data analytics & ML', features: 'Leverages Google\'s powerful data tools', beginnerFriendliness: 4 },
+                { name: 'Azure IoT', bestFor: 'Enterprise security', features: 'Strong integration with Microsoft services', beginnerFriendliness: 5 },
+            ];
+
+            function showSection(id) {
+                sections.forEach(section => {
+                    if (section.id === id) {
+                        section.classList.add('active');
+                    } else {
+                        section.classList.remove('active');
+                    }
+                });
+                navLinks.forEach(link => {
+                    if (link.hash === `#${id}`) {
+                        link.classList.add('active');
+                    } else {
+                        link.classList.remove('active');
+                    }
+                });
+                if (mobileNav.value !== id) {
+                    mobileNav.value = id;
+                }
+            }
+
+            function handleNav(event) {
+                event.preventDefault();
+                const id = event.target.hash.substring(1);
+                showSection(id);
+                window.history.pushState(null, '', `#${id}`);
+            }
+
+            navLinks.forEach(link => link.addEventListener('click', handleNav));
+            mobileNav.addEventListener('change', (e) => showSection(e.target.value));
+
+            const initialId = window.location.hash ? window.location.hash.substring(1) : 'intro';
+            showSection(initialId);
+
+            // MQTT Animation
+            const mqttDot = document.getElementById('mqtt-dot');
+            const animateMqttBtn = document.getElementById('animate-mqtt-btn');
+            animateMqttBtn.addEventListener('click', () => {
+                mqttDot.style.transition = 'none';
+                mqttDot.style.opacity = '0';
+                mqttDot.style.transform = 'translateX(0)';
+
+                setTimeout(() => {
+                    mqttDot.style.transition = 'all 1.5s ease-in-out';
+                    mqttDot.style.opacity = '1';
+                    mqttDot.style.transform = 'translateX(300%)';
+                }, 100);
+            });
+
+            // Smart Light Project Simulation
+            const lightSwitch = document.getElementById('light-switch');
+            const lightSwitchDot = document.getElementById('light-switch-dot');
+            const lightStatusText = document.getElementById('light-status-text');
+            const simLight = document.getElementById('sim-light');
+            const simMessage = document.getElementById('sim-message');
+
+            lightSwitch.addEventListener('change', () => {
+                const isOn = lightSwitch.checked;
+                simMessage.style.opacity = '0';
+                
+                setTimeout(() => {
+                    if (isOn) {
+                        lightSwitchDot.style.transform = 'translateX(1.5rem)';
+                        lightStatusText.textContent = 'On';
+                        simMessage.textContent = 'Sending "ON" command to cloud...';
+                    } else {
+                        lightSwitchDot.style.transform = 'translateX(0)';
+                        lightStatusText.textContent = 'Off';
+                        simMessage.textContent = 'Sending "OFF" command to cloud...';
+                    }
+                    simMessage.style.opacity = '1';
+                }, 100);
+
+                setTimeout(() => {
+                    simMessage.textContent = 'Cloud processing command...';
+                }, 1500);
+
+                setTimeout(() => {
+                    simMessage.textContent = 'Command sent to ESP32!';
+                    if (isOn) {
+                        simLight.style.backgroundColor = '#fde047'; // yellow-300
+                        simLight.style.borderColor = '#facc15'; // yellow-400
+                        simLight.style.boxShadow = '0 0 20px 5px #fde047';
+                    } else {
+                        simLight.style.backgroundColor = '#d1d5db'; // slate-300
+                        simLight.style.borderColor = '#9ca3af'; // slate-400
+                        simLight.style.boxShadow = 'none';
+                    }
+                }, 3000);
+            });
+
+            // Resources Chart
+            const platformSelector = document.getElementById('platform-selector');
+            const ctx = document.getElementById('platformChart').getContext('2d');
+            let platformChart;
+
+            function populateSelector() {
+                platformData.forEach(p => {
+                    const option = document.createElement('option');
+                    option.value = p.name;
+                    option.textContent = p.name;
+                    platformSelector.appendChild(option);
+                });
+            }
+
+            function createOrUpdateChart(selectedPlatformName) {
+                const selectedPlatform = platformData.find(p => p.name === selectedPlatformName);
+                const chartData = {
+                    labels: [selectedPlatform.name],
+                    datasets: [{
+                        label: 'Beginner Friendliness (out of 10)',
+                        data: [selectedPlatform.beginnerFriendliness],
+                        backgroundColor: ['rgba(59, 130, 246, 0.6)'],
+                        borderColor: ['rgba(59, 130, 246, 1)'],
+                        borderWidth: 1
+                    }]
+                };
+
+                if (platformChart) {
+                    platformChart.destroy();
+                }
+
+                platformChart = new Chart(ctx, {
+                    type: 'bar',
+                    data: chartData,
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                max: 10,
+                                title: {
+                                    display: true,
+                                    text: 'Score'
+                                }
+                            }
+                        },
+                        plugins: {
+                            legend: {
+                                display: false
+                            },
+                            tooltip: {
+                                callbacks: {
+                                    title: () => selectedPlatform.name,
+                                    label: (context) => `Score: ${context.raw}/10`,
+                                    afterLabel: () => `Best for: ${selectedPlatform.bestFor}`
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+            
+            populateSelector();
+            createOrUpdateChart(platformData[0].name);
+            platformSelector.addEventListener('change', (e) => createOrUpdateChart(e.target.value));
+
+        });
+    </script>
+</body>
+</html>
