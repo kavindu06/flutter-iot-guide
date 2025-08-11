@@ -1,3 +1,15 @@
+Of course\! I've updated the HTML to integrate the Flutter workshop.
+
+Here are the key changes:
+
+1.  **New Workshop Section:** A new, hidden `div` with the ID `workshop` has been added to hold the full workshop schedule. It's styled to match the rest of the page.
+2.  **"Get Started" Card:** A new, prominent card has been added to the "Get Started" section. Tapping this card will navigate you directly to the new workshop page.
+3.  **Navigation Links:** "Workshop" has been added to both the main header navigation and the mobile dropdown menu for easy access.
+4.  **JavaScript Integration:** The existing navigation logic will automatically handle showing and hiding the new workshop section when a link is clicked.
+
+Here is the complete updated code:
+
+```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -9,12 +21,6 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <!-- Chosen Palette: Calm Neutrals -->
-    <!-- Application Structure Plan: The application is a non-linear, interactive single-page app. This update introduces a full authentication layer using Firebase Email/Password. A login modal is added, and the UI state (login/logout buttons, user email display) is managed based on the user's auth status. Editing permissions for the notepad are now restricted to logged-in users. -->
-    <!-- Visualization & Content Choices: 
-        - Feature: Collaborative Notepad -> Goal: Utility/Collaboration -> Viz/Method: The notepad textarea is now conditionally disabled based on authentication status. A message prompts non-logged-in users to sign in to edit.
-        - Feature: User Authentication -> Goal: Security/Personalization -> Viz/Method: A login/signup modal provides the UI for authentication. The header dynamically changes to show user status. This is a critical feature for enabling permission-controlled actions.
-        - CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
     <style>
         body { font-family: 'Inter', sans-serif; }
         .section { display: none; }
@@ -30,12 +36,12 @@
         .save-status { transition: opacity 0.5s ease; }
         .auth-modal { display: none; }
         .auth-modal.active { display: flex; }
+        .code-block { background-color: #1e293b; color: #e2e8f0; padding: 1rem; border-radius: 0.5rem; overflow-x: auto; font-family: 'Courier New', Courier, monospace; }
     </style>
 </head>
 <body class="bg-slate-50 text-slate-800">
 
     <div class="min-h-screen flex flex-col">
-        <!-- Header & Navigation -->
         <header class="bg-white/80 backdrop-blur-lg sticky top-0 z-50 shadow-sm">
             <div class="container mx-auto px-4">
                 <div class="flex justify-between items-center py-4 border-b border-slate-200">
@@ -45,10 +51,11 @@
                             <a href="#intro" class="nav-link">Introduction</a>
                             <a href="#why" class="nav-link">Why Flutter?</a>
                             <a href="#start" class="nav-link">Get Started</a>
+                            <a href="#workshop" class="nav-link font-semibold text-blue-600">Workshop</a>
                             <a href="#concepts" class="nav-link">Core Concepts</a>
                             <a href="#project" class="nav-link">Example Project</a>
                             <a href="#resources" class="nav-link">Resources</a>
-                            <a href="#share-code" class="nav-link text-blue-600 font-semibold">Shared Notepad</a>
+                            <a href="#share-code" class="nav-link text-purple-600">Shared Notepad</a>
                         </nav>
                         <div id="auth-container" class="flex items-center space-x-3">
                             <button id="login-btn" class="bg-blue-500 hover:bg-blue-600 text-white font-semibold px-4 py-2 rounded-lg text-sm transition-colors">Login</button>
@@ -62,6 +69,7 @@
                                 <option value="intro">Introduction</option>
                                 <option value="why">Why Flutter?</option>
                                 <option value="start">Get Started</option>
+                                <option value="workshop">Workshop</option>
                                 <option value="concepts">Core Concepts</option>
                                 <option value="project">Example Project</option>
                                 <option value="resources">Resources</option>
@@ -73,10 +81,8 @@
             </div>
         </header>
 
-        <!-- Main Content -->
         <main class="flex-grow container mx-auto px-4 py-8 md:py-12">
             <div id="intro" class="section">
-                <!-- Intro content remains the same -->
                  <div class="text-center">
                     <h2 class="text-4xl md:text-5xl font-extrabold text-slate-900 mb-4">Building Connected Experiences</h2>
                     <p class="text-lg md:text-xl text-slate-600 max-w-3xl mx-auto mb-12">A beginner's guide to creating Internet of Things (IoT) applications with Flutter.</p>
@@ -115,8 +121,7 @@
                 </div>
             </div>
             <div id="why" class="section">
-                <!-- Why content remains the same -->
-                <div class="text-center">
+                 <div class="text-center">
                     <h2 class="text-3xl md:text-4xl font-bold text-slate-900 mb-4">Why Use Flutter for IoT?</h2>
                     <p class="text-lg text-slate-600 max-w-3xl mx-auto mb-12">Flutter is a fantastic choice for building the user interface for your IoT projects. Here's why.</p>
                 </div>
@@ -148,12 +153,11 @@
                 </div>
             </div>
             <div id="start" class="section">
-                <!-- Start content remains the same -->
                  <div class="text-center">
                     <h2 class="text-3xl md:text-4xl font-bold text-slate-900 mb-4">Getting Started: Your Toolbox</h2>
                     <p class="text-lg text-slate-600 max-w-3xl mx-auto mb-12">Here's the hardware and software you'll need to begin your Flutter IoT journey.</p>
                 </div>
-                <div class="grid md:grid-cols-2 gap-8">
+                <div class="grid md:grid-cols-2 gap-8 mb-8">
                     <div class="bg-white p-6 rounded-lg shadow-lg">
                         <h3 class="text-2xl font-bold mb-4 text-center">Hardware 🔧</h3>
                         <div class="space-y-4">
@@ -197,10 +201,118 @@
                         </div>
                     </div>
                 </div>
+                <a href="#workshop" class="block bg-blue-50 hover:bg-blue-100 border border-blue-200 p-8 rounded-lg shadow-lg hover:shadow-xl transition-all text-center group">
+                     <h3 class="text-2xl font-bold mb-3 text-blue-800">🚀 Next Step: Full-Day Workshop</h3>
+                     <p class="text-blue-700 max-w-3xl mx-auto">Ready to dive deep? Click here for our comprehensive one-day workshop schedule, complete with code examples and core concepts to get you building real apps.</p>
+                </a>
             </div>
+            
+            <div id="workshop" class="section">
+                 <div class="text-center">
+                    <h2 class="text-3xl md:text-4xl font-bold text-slate-900 mb-4">Flutter in a Day: Workshop Schedule</h2>
+                    <p class="text-lg text-slate-600 max-w-3xl mx-auto mb-12">A one-day workshop for beginners, split into two 4-hour sessions with a one-hour break.</p>
+                </div>
+
+                <div class="space-y-12">
+                    <div class="bg-white p-8 rounded-xl shadow-lg">
+                        <h3 class="text-2xl font-bold mb-6 border-b pb-4">Session 1: Flutter Fundamentals (9:00 AM - 1:00 PM)</h3>
+                        <div class="space-y-6">
+                            <div>
+                                <h4 class="text-xl font-semibold">9:30 AM - Your First Flutter App</h4>
+                                <p class="text-slate-600 mt-1">Creating a project, understanding the structure (`main.dart`, `pubspec.yaml`), and using core widgets like `MaterialApp`, `Scaffold`, `AppBar`, `Text`, and `Center`.</p>
+                                <div class="mt-4 p-4 bg-slate-100 rounded-lg">
+                                    <h5 class="font-semibold text-slate-800">OOP Concept: Classes and Objects</h5>
+                                    <p class="text-slate-600 text-sm mt-1">Everything in Flutter is a Widget. A Widget is a **class** (a blueprint). When you use it, you create an **object** (an instance of the blueprint).</p>
+                                </div>
+                                <pre class="code-block mt-4"><code>import 'package:flutter/material.dart';
+
+void main() => runApp(const MyApp());
+
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      home: Scaffold(
+        appBar: AppBar(title: const Text('Hello, Flutter!')),
+        body: const Center(child: Text('Welcome!')),
+      ),
+    );
+  }
+}</code></pre>
+                            </div>
+                            <div>
+                                <h4 class="text-xl font-semibold">10:30 AM - Building Layouts</h4>
+                                <p class="text-slate-600 mt-1">Arranging widgets with `Row` and `Column`. Styling with `Container` for padding, margins, and colors.</p>
+                            </div>
+                            <div>
+                                <h4 class="text-xl font-semibold">11:30 AM - State and Interactivity</h4>
+                                <p class="text-slate-600 mt-1">Understanding the difference between `Stateless` and `Stateful` widgets. Using `setState()` to update the UI and handling user input with buttons.</p>
+                                <div class="mt-4 p-4 bg-slate-100 rounded-lg">
+                                    <h5 class="font-semibold text-slate-800">OOP Concept: Encapsulation</h5>
+                                    <p class="text-slate-600 text-sm mt-1">A `StatefulWidget` and its `State` class bundle data (state) and the logic to change it together, hiding the internal complexity.</p>
+                                </div>
+                                 <pre class="code-block mt-4"><code>class CounterPage extends StatefulWidget {
+  const CounterPage({super.key});
+  @override
+  State&lt;CounterPage&gt; createState() => _CounterPageState();
+}
+
+class _CounterPageState extends State&lt;CounterPage&gt; {
+  int _counter = 0;
+
+  void _increment() {
+    setState(() { _counter++; });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Center(child: Text('Count: $_counter')),
+      floatingActionButton: FloatingActionButton(
+        onPressed: _increment,
+        child: const Icon(Icons.add),
+      ),
+    );
+  }
+}</code></pre>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="text-center font-bold text-slate-600 text-xl">---- 🍔 LUNCH BREAK (1:00 PM - 2:00 PM) ----</div>
+
+                    <div class="bg-white p-8 rounded-xl shadow-lg">
+                        <h3 class="text-2xl font-bold mb-6 border-b pb-4">Session 2: Diving Deeper (2:00 PM - 6:00 PM)</h3>
+                        <div class="space-y-6">
+                            <div>
+                                <h4 class="text-xl font-semibold">2:00 PM - Navigation & Data Passing</h4>
+                                <p class="text-slate-600 mt-1">Moving between screens using `Navigator.push()` and `Navigator.pop()`. Passing data to new screens.</p>
+                            </div>
+                             <div>
+                                <h4 class="text-xl font-semibold">3:00 PM - Displaying Dynamic Lists</h4>
+                                <p class="text-slate-600 mt-1">Using `ListView.builder` to efficiently create long lists of items. Creating custom widgets for list items.</p>
+                                <div class="mt-4 p-4 bg-slate-100 rounded-lg">
+                                    <h5 class="font-semibold text-slate-800">OOP Concept: Inheritance</h5>
+                                    <p class="text-slate-600 text-sm mt-1">You create a custom widget (e.g., `TodoListItem`) by having it **inherit** from `StatelessWidget`. This gives your custom widget all the standard Flutter widget features.</p>
+                                </div>
+                            </div>
+                             <div>
+                                <h4 class="text-xl font-semibold">4:00 PM - Deeper Dive into Dart OOP</h4>
+                                <p class="text-slate-600 mt-1">A focused look at creating custom classes, extending them (Inheritance), and overriding methods (Polymorphism).</p>
+                            </div>
+                            <div>
+                                <h4 class="text-xl font-semibold">5:00 PM - Q&A and Next Steps</h4>
+                                <p class="text-slate-600 mt-1">Recap of the day and resources for further learning, including official docs and community channels.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <div id="concepts" class="section">
-                <!-- Concepts content remains the same -->
-                <div class="text-center">
+                 <div class="text-center">
                     <h2 class="text-3xl md:text-4xl font-bold text-slate-900 mb-4">Core Concepts: How It Works</h2>
                     <p class="text-lg text-slate-600 max-w-3xl mx-auto mb-12">The magic behind device communication is a protocol called MQTT.</p>
                 </div>
@@ -209,35 +321,34 @@
                      <p class="text-center text-slate-600 mb-8 max-w-2xl mx-auto">Think of MQTT as a postal service for devices. A device can <b class="text-blue-600">publish</b> a message to a "topic" (like an address), and any app or device that has <b class="text-green-600">subscribed</b> to that topic will receive the message instantly.</p>
                      
                      <div class="w-full max-w-3xl mx-auto p-4 border border-slate-200 rounded-lg">
-                        <div class="flex justify-around items-center h-48 relative">
-                            <div class="text-center z-10">
-                                <div class="bg-blue-100 text-blue-600 rounded-full w-20 h-20 flex items-center justify-center text-3xl mx-auto mb-2">🌡️</div>
-                                <h5 class="font-semibold">Publisher</h5>
-                                <p class="text-sm text-slate-500">(Your Device)</p>
-                            </div>
-                            <div class="text-center z-10">
-                                <div class="bg-purple-100 text-purple-600 rounded-full w-24 h-24 flex items-center justify-center text-4xl mx-auto mb-2">🏢</div>
-                                <h5 class="font-semibold">Broker</h5>
-                                <p class="text-sm text-slate-500">(Cloud Platform)</p>
-                            </div>
-                            <div class="text-center z-10">
-                                <div class="bg-green-100 text-green-600 rounded-full w-20 h-20 flex items-center justify-center text-3xl mx-auto mb-2">📱</div>
-                                <h5 class="font-semibold">Subscriber</h5>
-                                <p class="text-sm text-slate-500">(Your App)</p>
-                            </div>
-                            <div id="mqtt-dot" class="mqtt-dot absolute bg-red-500 rounded-full w-4 h-4 top-1/2 left-1/4 -translate-y-1/2 opacity-0"></div>
-                        </div>
-                        <div class="text-center mt-4">
-                            <button id="animate-mqtt-btn" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-lg transition-colors">
-                                See it in Action
-                            </button>
-                        </div>
+                         <div class="flex justify-around items-center h-48 relative">
+                             <div class="text-center z-10">
+                                 <div class="bg-blue-100 text-blue-600 rounded-full w-20 h-20 flex items-center justify-center text-3xl mx-auto mb-2">🌡️</div>
+                                 <h5 class="font-semibold">Publisher</h5>
+                                 <p class="text-sm text-slate-500">(Your Device)</p>
+                             </div>
+                             <div class="text-center z-10">
+                                 <div class="bg-purple-100 text-purple-600 rounded-full w-24 h-24 flex items-center justify-center text-4xl mx-auto mb-2">🏢</div>
+                                 <h5 class="font-semibold">Broker</h5>
+                                 <p class="text-sm text-slate-500">(Cloud Platform)</p>
+                             </div>
+                             <div class="text-center z-10">
+                                 <div class="bg-green-100 text-green-600 rounded-full w-20 h-20 flex items-center justify-center text-3xl mx-auto mb-2">📱</div>
+                                 <h5 class="font-semibold">Subscriber</h5>
+                                 <p class="text-sm text-slate-500">(Your App)</p>
+                             </div>
+                             <div id="mqtt-dot" class="mqtt-dot absolute bg-red-500 rounded-full w-4 h-4 top-1/2 left-1/4 -translate-y-1/2 opacity-0"></div>
+                         </div>
+                         <div class="text-center mt-4">
+                             <button id="animate-mqtt-btn" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-lg transition-colors">
+                                 See it in Action
+                             </button>
+                         </div>
                      </div>
                 </div>
             </div>
             <div id="project" class="section">
-                <!-- Project content remains the same -->
-                <div class="text-center">
+                 <div class="text-center">
                     <h2 class="text-3xl md:text-4xl font-bold text-slate-900 mb-4">Example Project: The Smart Light</h2>
                     <p class="text-lg text-slate-600 max-w-3xl mx-auto mb-12">Let's build a virtual smart light switch to see how everything connects.</p>
                 </div>
@@ -246,15 +357,15 @@
                         <div class="border border-slate-200 rounded-lg p-6 text-center bg-slate-900">
                              <h3 class="text-xl font-semibold mb-4 text-white">Flutter App</h3>
                              <div class="bg-slate-800 rounded-xl p-8 max-w-xs mx-auto">
-                                <p class="text-slate-400 mb-4">Living Room Light</p>
-                                <label for="light-switch" class="flex items-center justify-center cursor-pointer">
-                                    <div class="relative">
-                                        <input type="checkbox" id="light-switch" class="sr-only">
-                                        <div class="block bg-slate-600 w-14 h-8 rounded-full"></div>
-                                        <div id="light-switch-dot" class="dot absolute left-1 top-1 bg-white w-6 h-6 rounded-full transition-transform"></div>
-                                    </div>
-                                </label>
-                                <p id="light-status-text" class="text-white font-semibold mt-4 text-lg">Off</p>
+                                 <p class="text-slate-400 mb-4">Living Room Light</p>
+                                 <label for="light-switch" class="flex items-center justify-center cursor-pointer">
+                                     <div class="relative">
+                                         <input type="checkbox" id="light-switch" class="sr-only">
+                                         <div class="block bg-slate-600 w-14 h-8 rounded-full"></div>
+                                         <div id="light-switch-dot" class="dot absolute left-1 top-1 bg-white w-6 h-6 rounded-full transition-transform"></div>
+                                     </div>
+                                 </label>
+                                 <p id="light-status-text" class="text-white font-semibold mt-4 text-lg">Off</p>
                              </div>
                         </div>
                         <div class="border border-slate-200 rounded-lg p-6 text-center relative">
@@ -271,13 +382,12 @@
                         </div>
                     </div>
                      <div class="text-center mt-6">
-                        <p id="sim-message" class="text-slate-600 h-6 transition-opacity"></p>
+                         <p id="sim-message" class="text-slate-600 h-6 transition-opacity"></p>
                     </div>
                 </div>
             </div>
             <div id="resources" class="section">
-                <!-- Resources content remains the same -->
-                <div class="text-center">
+                 <div class="text-center">
                     <h2 class="text-3xl md:text-4xl font-bold text-slate-900 mb-4">Resources & Next Steps</h2>
                     <p class="text-lg text-slate-600 max-w-3xl mx-auto mb-12">Explore platforms, packages, and project ideas to continue your journey.</p>
                 </div>
@@ -343,7 +453,6 @@
         </main>
     </div>
 
-    <!-- Auth Modal -->
     <div id="auth-modal" class="auth-modal fixed inset-0 bg-black bg-opacity-50 items-center justify-center z-50">
         <div class="bg-white rounded-lg shadow-xl p-6 w-full max-w-sm m-4 relative">
             <button id="close-modal-btn" class="absolute top-3 right-3 text-slate-500 hover:text-slate-800 text-2xl">&times;</button>
@@ -431,12 +540,16 @@
                 window.history.pushState(null, '', `#${e.target.value}`);
             });
             
+            // This listener handles hash changes, including the new workshop card link
+            window.addEventListener('hashchange', () => {
+                const hashId = window.location.hash ? window.location.hash.substring(1) : 'intro';
+                showSection(hashId);
+            });
+            
+            // Set initial section based on hash or default to 'intro'
             const initialId = window.location.hash ? window.location.hash.substring(1) : 'intro';
             showSection(initialId);
-            window.addEventListener('hashchange', () => {
-                 const hashId = window.location.hash ? window.location.hash.substring(1) : 'intro';
-                 showSection(hashId);
-            });
+
 
             // --- Other Page Logic (Simulations, Charts, etc.) ---
             document.getElementById('animate-mqtt-btn').addEventListener('click', () => {
@@ -480,7 +593,7 @@
                     type: 'bar',
                     data: {
                         labels: [p.name],
-                        datasets: [{ data: [p.beginnerFriendliness], backgroundColor: 'rgba(59, 130, 246, 0.6)', borderColor: 'rgba(59, 130, 246, 1)', borderWidth: 1 }]
+                        datasets: [{ data: [p.beginnerFriendliness], label: 'Beginner Friendliness (out of 10)', backgroundColor: 'rgba(59, 130, 246, 0.6)', borderColor: 'rgba(59, 130, 246, 1)', borderWidth: 1 }]
                     },
                     options: { responsive: true, maintainAspectRatio: false, scales: { y: { beginAtZero: true, max: 10 } }, plugins: { legend: { display: false } } }
                 });
@@ -493,26 +606,20 @@
                     const targetId = e.target.dataset.copyTarget;
                     const textToCopy = document.getElementById(targetId).textContent;
                     const originalText = e.target.textContent;
-                    const tempTextArea = document.createElement('textarea');
-                    tempTextArea.value = textToCopy;
-                    document.body.appendChild(tempTextArea);
-                    tempTextArea.select();
-                    try {
-                        document.execCommand('copy');
+                    navigator.clipboard.writeText(textToCopy).then(() => {
                         e.target.textContent = 'Copied!';
                         e.target.classList.replace('bg-slate-200', 'bg-green-500');
                         e.target.classList.replace('hover:bg-slate-300', 'hover:bg-green-600');
                         e.target.classList.replace('text-slate-600', 'text-white');
-                    } catch (err) {
-                        e.target.textContent = 'Failed!';
-                    }
-                    document.body.removeChild(tempTextArea);
-                    setTimeout(() => {
-                        e.target.textContent = originalText;
-                        e.target.classList.replace('bg-green-500', 'bg-slate-200');
-                        e.target.classList.replace('hover:bg-green-600', 'hover:bg-slate-300');
-                        e.target.classList.replace('text-white', 'text-slate-600');
-                    }, 2000);
+                        setTimeout(() => {
+                            e.target.textContent = originalText;
+                            e.target.classList.replace('bg-green-500', 'bg-slate-200');
+                            e.target.classList.replace('hover:bg-green-600', 'hover:bg-slate-300');
+                            e.target.classList.replace('text-white', 'text-slate-600');
+                        }, 2000);
+                    }).catch(err => {
+                        console.error('Failed to copy text: ', err);
+                    });
                 });
             });
 
@@ -608,3 +715,4 @@
     </script>
 </body>
 </html>
+```
