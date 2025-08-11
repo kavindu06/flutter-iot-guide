@@ -334,9 +334,6 @@
                 <div class="bg-white p-8 rounded-xl shadow-lg max-w-4xl mx-auto">
                     <div class="relative">
                         <textarea id="notepad-textarea" class="w-full h-80 p-3 border border-slate-300 rounded-md font-mono text-sm" placeholder="Loading notepad..."></textarea>
-                        <div id="notepad-overlay" class="absolute inset-0 bg-slate-100 bg-opacity-70 flex items-center justify-center rounded-md">
-                            <p class="text-slate-600 font-semibold">Please log in to edit the notepad.</p>
-                        </div>
                     </div>
                     <div class="text-right mt-2">
                         <p id="save-status" class="save-status text-sm text-slate-500 opacity-0 h-5">All changes saved</p>
@@ -380,7 +377,6 @@
             const userInfo = document.getElementById('user-info');
             const userEmailEl = document.getElementById('user-email');
             const notepadTextarea = document.getElementById('notepad-textarea');
-            const notepadOverlay = document.getElementById('notepad-overlay');
             const authErrorEl = document.getElementById('auth-error');
 
             // --- Firebase Setup ---
@@ -529,7 +525,7 @@
                     userInfo.classList.add('flex');
                     userEmailEl.textContent = user.email;
                     notepadTextarea.disabled = false;
-                    notepadOverlay.classList.add('hidden');
+                    notepadTextarea.placeholder = "Start typing... your text is shared live.";
                     authModal.classList.remove('active');
                 } else {
                     // User is signed out
@@ -538,7 +534,7 @@
                     userInfo.classList.remove('flex');
                     userEmailEl.textContent = '';
                     notepadTextarea.disabled = true;
-                    notepadOverlay.classList.remove('hidden');
+                    notepadTextarea.placeholder = "Please log in to edit the shared notepad.";
                 }
             });
             
