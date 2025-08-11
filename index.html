@@ -341,7 +341,7 @@
     
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-        import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
         import { getFirestore, doc, onSnapshot, setDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
         document.addEventListener('DOMContentLoaded', async () => {
@@ -352,27 +352,32 @@
             // --- Firebase Setup ---
             let db, auth;
             try {
-                const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : {};
+                // Your web app's Firebase configuration
+                const firebaseConfig = {
+                  apiKey: "AIzaSyDt9lucsFhKpyl_MIDCTzD8Re7_ULuYqIE",
+                  authDomain: "flutter-iot-guide.firebaseapp.com",
+                  projectId: "flutter-iot-guide",
+                  storageBucket: "flutter-iot-guide.appspot.com",
+                  messagingSenderId: "180271194926",
+                  appId: "1:180271194926:web:2537dbf1faf81dd22210bf"
+                };
+
                 const app = initializeApp(firebaseConfig);
                 db = getFirestore(app);
                 auth = getAuth(app);
 
-                if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
-                    await signInWithCustomToken(auth, __initial_auth_token);
-                } else {
-                    await signInAnonymously(auth);
-                }
+                await signInAnonymously(auth);
                 
-                onAuthStateChanged(auth, (user) => {
-                    if (user) {
-                        initNotepad(db, user.uid);
-                    }
-                });
+                if (auth.currentUser) {
+                    initNotepad(db, auth.currentUser.uid);
+                }
 
             } catch (error) {
                 console.error("Firebase initialization failed:", error);
                 const notepadSection = document.getElementById('share-code');
-                notepadSection.innerHTML = `<div class="text-center text-red-500">Could not connect to the collaborative notepad service.</div>`;
+                if(notepadSection) {
+                    notepadSection.innerHTML = `<div class="text-center text-red-500 p-4 bg-red-100 rounded-lg">Could not connect to the collaborative notepad service. Please ensure your Firebase configuration is correct and you have enabled anonymous authentication.</div>`;
+                }
             }
             // --- End Firebase Setup ---
 
@@ -492,15 +497,16 @@
                 let saveTimeout;
                 let isWriting = false;
 
-                const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
-                const notepadDocRef = doc(db, `artifacts/${appId}/public/data/notepads/shared-notepad`);
+                const notepadDocRef = doc(db, "sharedNotepad/mainDoc");
 
                 // Listen for remote changes
                 onSnapshot(notepadDocRef, (doc) => {
                     if (doc.exists()) {
                         const remoteContent = doc.data().content;
                         if (notepad.value !== remoteContent && !isWriting) {
+                            const cursorPosition = notepad.selectionStart;
                             notepad.value = remoteContent;
+                            notepad.selectionStart = notepad.selectionEnd = cursorPosition;
                         }
                     }
                 });
@@ -532,5 +538,3 @@
     </script>
 </body>
 </html>
-
-
