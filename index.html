@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -10,6 +9,13 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Chosen Palette: Calm Neutrals -->
+    <!-- Application Structure Plan: The application is a non-linear, interactive single-page app. This update introduces a full authentication layer using Firebase Email/Password. A login modal is added, and the UI state (login/logout buttons, user email display) is managed based on the user's auth status. Editing permissions for the notepad are now restricted to logged-in users. This update also adds a new "Workshop" section and links to it. -->
+    <!-- Visualization & Content Choices:
+        - Feature: Collaborative Notepad -> Goal: Utility/Collaboration -> Viz/Method: The notepad textarea is now conditionally disabled based on authentication status. A message prompts non-logged-in users to sign in to edit.
+        - Feature: User Authentication -> Goal: Security/Personalization -> Viz/Method: A login/signup modal provides the UI for authentication. The header dynamically changes to show user status. This is a critical feature for enabling permission-controlled actions.
+        - Feature: Workshop Page -> Goal: Education/Onboarding -> Viz/Method: A new section is added with a detailed schedule for a one-day Flutter workshop. This section is linked from the main navigation and from a new card in the "Get Started" area. The code examples are now presented in a mobile UI mockup for better context and visual appeal.
+        - CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
     <style>
         body { font-family: 'Inter', sans-serif; }
         .section { display: none; }
@@ -25,12 +31,67 @@
         .save-status { transition: opacity 0.5s ease; }
         .auth-modal { display: none; }
         .auth-modal.active { display: flex; }
-        .code-block { background-color: #1e293b; color: #e2e8f0; padding: 1rem; border-radius: 0.5rem; overflow-x: auto; font-family: 'Courier New', Courier, monospace; }
+        
+        /* New Workshop Styles */
+        .workshop-step {
+            border-left: 4px solid #3b82f6;
+            padding-left: 1.5rem;
+            padding-top: 1rem;
+            padding-bottom: 1rem;
+            transition: background-color 0.3s;
+        }
+        .workshop-step:hover {
+            background-color: #f9fafb;
+        }
+        .phone-mockup {
+            background-color: #1e293b; /* slate-800 */
+            border-radius: 2rem;
+            padding: 1rem;
+            box-shadow: 0 20px 25px -5px rgba(0,0,0,0.2), 0 10px 10px -5px rgba(0,0,0,0.1);
+            border: 8px solid #334155; /* slate-700 */
+            position: relative;
+            max-width: 400px;
+            margin: 1.5rem auto 0 auto;
+        }
+        .phone-mockup::before {
+            content: '';
+            position: absolute;
+            top: 1rem;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 40%;
+            height: 1.25rem;
+            background-color: #334155; /* slate-700 */
+            border-radius: 0 0 1rem 1rem;
+        }
+        .phone-screen {
+            background-color: #0f172a; /* slate-900 */
+            color: #e2e8f0; /* slate-200 */
+            border-radius: 1.5rem;
+            height: 450px;
+            overflow: auto;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 0.8rem;
+            padding: 2rem 1rem 1rem 1rem;
+        }
+        .phone-screen::-webkit-scrollbar {
+            width: 4px;
+        }
+        .phone-screen::-webkit-scrollbar-thumb {
+            background-color: #475569;
+            border-radius: 2px;
+        }
+        .code-keyword { color: #f472b6; } /* pink-400 */
+        .code-class { color: #60a5fa; } /* blue-400 */
+        .code-string { color: #a3e635; } /* lime-400 */
+        .code-comment { color: #64748b; } /* slate-500 */
+        .code-number { color: #f87171; } /* red-400 */
     </style>
 </head>
 <body class="bg-slate-50 text-slate-800">
 
     <div class="min-h-screen flex flex-col">
+        <!-- Header & Navigation -->
         <header class="bg-white/80 backdrop-blur-lg sticky top-0 z-50 shadow-sm">
             <div class="container mx-auto px-4">
                 <div class="flex justify-between items-center py-4 border-b border-slate-200">
@@ -70,9 +131,11 @@
             </div>
         </header>
 
+        <!-- Main Content -->
         <main class="flex-grow container mx-auto px-4 py-8 md:py-12">
             <div id="intro" class="section">
-                 <div class="text-center">
+                 <!-- Intro content remains the same -->
+                <div class="text-center">
                     <h2 class="text-4xl md:text-5xl font-extrabold text-slate-900 mb-4">Building Connected Experiences</h2>
                     <p class="text-lg md:text-xl text-slate-600 max-w-3xl mx-auto mb-12">A beginner's guide to creating Internet of Things (IoT) applications with Flutter.</p>
                 </div>
@@ -110,7 +173,8 @@
                 </div>
             </div>
             <div id="why" class="section">
-                 <div class="text-center">
+                 <!-- Why content remains the same -->
+                <div class="text-center">
                     <h2 class="text-3xl md:text-4xl font-bold text-slate-900 mb-4">Why Use Flutter for IoT?</h2>
                     <p class="text-lg text-slate-600 max-w-3xl mx-auto mb-12">Flutter is a fantastic choice for building the user interface for your IoT projects. Here's why.</p>
                 </div>
@@ -142,7 +206,8 @@
                 </div>
             </div>
             <div id="start" class="section">
-                 <div class="text-center">
+                 <!-- Start content modified to include workshop link -->
+                <div class="text-center">
                     <h2 class="text-3xl md:text-4xl font-bold text-slate-900 mb-4">Getting Started: Your Toolbox</h2>
                     <p class="text-lg text-slate-600 max-w-3xl mx-auto mb-12">Here's the hardware and software you'll need to begin your Flutter IoT journey.</p>
                 </div>
@@ -190,12 +255,14 @@
                         </div>
                     </div>
                 </div>
-                <a href="#workshop" class="block bg-blue-50 hover:bg-blue-100 border border-blue-200 p-8 rounded-lg shadow-lg hover:shadow-xl transition-all text-center group">
+                <!-- WORKSHOP CARD -->
+                <a href="#workshop" class="block bg-blue-50 hover:bg-blue-100 border border-blue-200 p-8 rounded-lg shadow-lg hover:shadow-xl transition-all text-center group" onclick="showSection('workshop');">
                      <h3 class="text-2xl font-bold mb-3 text-blue-800">🚀 Next Step: Full-Day Workshop</h3>
                      <p class="text-blue-700 max-w-3xl mx-auto">Ready to dive deep? Click here for our comprehensive one-day workshop schedule, complete with code examples and core concepts to get you building real apps.</p>
                 </a>
             </div>
             
+            <!-- WORKSHOP SECTION -->
             <div id="workshop" class="section">
                  <div class="text-center">
                     <h2 class="text-3xl md:text-4xl font-bold text-slate-900 mb-4">Flutter in a Day: Workshop Schedule</h2>
@@ -203,95 +270,204 @@
                 </div>
 
                 <div class="space-y-12">
+                    <!-- Session 1 -->
                     <div class="bg-white p-8 rounded-xl shadow-lg">
-                        <h3 class="text-2xl font-bold mb-6 border-b pb-4">Session 1: Flutter Fundamentals (9:00 AM - 1:00 PM)</h3>
-                        <div class="space-y-6">
-                            <div>
-                                <h4 class="text-xl font-semibold">9:30 AM - Your First Flutter App</h4>
+                        <h3 class="text-2xl font-bold mb-6 border-b pb-4">Session 1: Flutter Fundamentals (8:00 AM - 12:00 PM)</h3>
+                        <div class="space-y-8">
+                            <div class="workshop-step">
+                                <h4 class="text-xl font-semibold">8:30 AM - Your First Flutter App</h4>
                                 <p class="text-slate-600 mt-1">Creating a project, understanding the structure (`main.dart`, `pubspec.yaml`), and using core widgets like `MaterialApp`, `Scaffold`, `AppBar`, `Text`, and `Center`.</p>
                                 <div class="mt-4 p-4 bg-slate-100 rounded-lg">
                                     <h5 class="font-semibold text-slate-800">OOP Concept: Classes and Objects</h5>
                                     <p class="text-slate-600 text-sm mt-1">Everything in Flutter is a Widget. A Widget is a **class** (a blueprint). When you use it, you create an **object** (an instance of the blueprint).</p>
                                 </div>
-                                <pre class="code-block mt-4"><code>import 'package:flutter/material.dart';
+                                <div class="phone-mockup">
+                                    <pre class="phone-screen"><code><span class="code-keyword">import</span> <span class="code-string">'package:flutter/material.dart'</span>;
 
-void main() => runApp(const MyApp());
+<span class="code-keyword">void</span> main() => runApp(<span class="code-keyword">const</span> <span class="code-class">MyApp</span>());
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+<span class="code-keyword">class</span> <span class="code-class">MyApp</span> <span class="code-keyword">extends</span> <span class="code-class">StatelessWidget</span> {
+  <span class="code-keyword">const</span> <span class="code-class">MyApp</span>({<span class="code-keyword">super</span>.key});
 
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      home: Scaffold(
-        appBar: AppBar(title: const Text('Hello, Flutter!')),
-        body: const Center(child: Text('Welcome!')),
+  <span class="code-meta">@override</span>
+  <span class="code-class">Widget</span> build(<span class="code-class">BuildContext</span> context) {
+    <span class="code-keyword">return</span> <span class="code-class">MaterialApp</span>(
+      home: <span class="code-class">Scaffold</span>(
+        appBar: <span class="code-class">AppBar</span>(
+          title: <span class="code-keyword">const</span> <span class="code-class">Text</span>(<span class="code-string">'Hello, Flutter!'</span>),
+        ),
+        body: <span class="code-keyword">const</span> <span class="code-class">Center</span>(
+          child: <span class="code-class">Text</span>(<span class="code-string">'Welcome!'</span>),
+        ),
       ),
     );
   }
-}</code></pre>
+}
+</code></pre>
+                                </div>
                             </div>
-                            <div>
-                                <h4 class="text-xl font-semibold">10:30 AM - Building Layouts</h4>
-                                <p class="text-slate-600 mt-1">Arranging widgets with `Row` and `Column`. Styling with `Container` for padding, margins, and colors.</p>
+                            <div class="workshop-step">
+                                <h4 class="text-xl font-semibold">9:30 AM - Building Layouts</h4>
+                                <p class="text-slate-600 mt-1">Arranging widgets with `Row` and `Column`. Styling with `Container` for padding, margins, and colors to create a simple profile card.</p>
+                                <div class="mt-4 p-4 bg-slate-100 rounded-lg">
+                                    <h5 class="font-semibold text-slate-800">OOP Concept: Composition</h5>
+                                    <p class="text-slate-600 text-sm mt-1">Instead of inheriting many properties, you **compose** complex UIs by nesting simple widgets inside each other. A `Column` can *have a* `Text` widget, which *has a* `TextStyle`.</p>
+                                </div>
+                                <div class="phone-mockup">
+                                    <pre class="phone-screen"><code><span class="code-comment">// Inside the Scaffold's body property</span>
+body: <span class="code-class">Center</span>(
+  child: <span class="code-class">Container</span>(
+    padding: <span class="code-keyword">const</span> <span class="code-class">EdgeInsets</span>.all(<span class="code-number">16.0</span>),
+    decoration: <span class="code-class">BoxDecoration</span>(
+      color: <span class="code-class">Colors</span>.grey[<span class="code-number">200</span>],
+      borderRadius: <span class="code-class">BorderRadius</span>.circular(<span class="code-number">10.0</span>),
+    ),
+    child: <span class="code-keyword">const</span> <span class="code-class">Column</span>(
+      mainAxisSize: <span class="code-class">MainAxisSize</span>.min,
+      children: [
+        <span class="code-class">CircleAvatar</span>(
+          radius: <span class="code-number">50</span>,
+          backgroundImage: <span class="code-class">NetworkImage</span>(
+            <span class="code-string">'https://placehold.co/100'</span>
+          ),
+        ),
+        <span class="code-class">SizedBox</span>(height: <span class="code-number">10</span>),
+        <span class="code-class">Text</span>(
+          <span class="code-string">'Jane Doe'</span>,
+          style: <span class="code-class">TextStyle</span>(
+            fontSize: <span class="code-number">22</span>,
+            fontWeight: <span class="code-class">FontWeight</span>.bold,
+          ),
+        ),
+      ],
+    ),
+  ),
+),
+</code></pre>
+                                </div>
                             </div>
-                            <div>
-                                <h4 class="text-xl font-semibold">11:30 AM - State and Interactivity</h4>
+                            <div class="workshop-step">
+                                <h4 class="text-xl font-semibold">10:30 AM - State and Interactivity</h4>
                                 <p class="text-slate-600 mt-1">Understanding the difference between `Stateless` and `Stateful` widgets. Using `setState()` to update the UI and handling user input with buttons.</p>
                                 <div class="mt-4 p-4 bg-slate-100 rounded-lg">
                                     <h5 class="font-semibold text-slate-800">OOP Concept: Encapsulation</h5>
                                     <p class="text-slate-600 text-sm mt-1">A `StatefulWidget` and its `State` class bundle data (state) and the logic to change it together, hiding the internal complexity.</p>
                                 </div>
-                                 <pre class="code-block mt-4"><code>class CounterPage extends StatefulWidget {
-  const CounterPage({super.key});
-  @override
-  State&lt;CounterPage&gt; createState() => _CounterPageState();
+                                 <div class="phone-mockup">
+                                     <pre class="phone-screen"><code><span class="code-keyword">class</span> <span class="code-class">CounterPage</span> <span class="code-keyword">extends</span> <span class="code-class">StatefulWidget</span> {
+  <span class="code-keyword">const</span> <span class="code-class">CounterPage</span>({<span class="code-keyword">super</span>.key});
+  <span class="code-meta">@override</span>
+  <span class="code-class">State</span>&lt;<span class="code-class">CounterPage</span>&gt; createState() => <span class="code-class">_CounterPageState</span>();
 }
 
-class _CounterPageState extends State&lt;CounterPage&gt; {
-  int _counter = 0;
+<span class="code-keyword">class</span> <span class="code-class">_CounterPageState</span> <span class="code-keyword">extends</span> <span class="code-class">State</span>&lt;<span class="code-class">CounterPage</span>&gt; {
+  <span class="code-keyword">int</span> _counter = <span class="code-number">0</span>;
 
-  void _increment() {
-    setState(() { _counter++; });
+  <span class="code-keyword">void</span> _increment() {
+    setState(() { 
+      _counter++; 
+    });
   }
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: Center(child: Text('Count: $_counter')),
-      floatingActionButton: FloatingActionButton(
+  <span class="code-meta">@override</span>
+  <span class="code-class">Widget</span> build(<span class="code-class">BuildContext</span> context) {
+    <span class="code-keyword">return</span> <span class="code-class">Scaffold</span>(
+      body: <span class="code-class">Center</span>(child: <span class="code-class">Text</span>(<span class="code-string">'Count: $_counter'</span>)),
+      floatingActionButton: <span class="code-class">FloatingActionButton</span>(
         onPressed: _increment,
-        child: const Icon(Icons.add),
+        child: <span class="code-keyword">const</span> <span class="code-class">Icon</span>(<span class="code-class">Icons</span>.add),
       ),
     );
   }
 }</code></pre>
+                                 </div>
                             </div>
                         </div>
                     </div>
                     
-                    <div class="text-center font-bold text-slate-600 text-xl">---- 🍔 LUNCH BREAK (1:00 PM - 2:00 PM) ----</div>
+                    <div class="text-center font-bold text-slate-600 text-xl">---- 🍔 LUNCH BREAK (12:00 PM - 1:00 PM) ----</div>
 
+                    <!-- Session 2 -->
                     <div class="bg-white p-8 rounded-xl shadow-lg">
-                        <h3 class="text-2xl font-bold mb-6 border-b pb-4">Session 2: Diving Deeper (2:00 PM - 6:00 PM)</h3>
-                        <div class="space-y-6">
-                            <div>
+                        <h3 class="text-2xl font-bold mb-6 border-b pb-4">Session 2: Diving Deeper (1:00 PM - 5:00 PM)</h3>
+                        <div class="space-y-8">
+                            <div class="workshop-step">
                                 <h4 class="text-xl font-semibold">2:00 PM - Navigation & Data Passing</h4>
-                                <p class="text-slate-600 mt-1">Moving between screens using `Navigator.push()` and `Navigator.pop()`. Passing data to new screens.</p>
+                                <p class="text-slate-600 mt-1">Moving between screens using `Navigator.push()` and `Navigator.pop()`. Passing data to new screens via constructors.</p>
+                                <div class="mt-4 p-4 bg-slate-100 rounded-lg">
+                                    <h5 class="font-semibold text-slate-800">OOP Concept: Abstraction</h5>
+                                    <p class="text-slate-600 text-sm mt-1">The `Navigator` widget **abstracts** away the complex details of screen transitions. You don't need to know *how* it animates the page, you just tell it *what* to show.</p>
+                                </div>
+                                <div class="phone-mockup">
+                                     <pre class="phone-screen"><code><span class="code-comment">// Screen 1: Sending data</span>
+<span class="code-class">ElevatedButton</span>(
+  child: <span class="code-keyword">const</span> <span class="code-class">Text</span>(<span class="code-string">'Go to Details'</span>),
+  onPressed: () {
+    <span class="code-class">Navigator</span>.push(
+      context,
+      <span class="code-class">MaterialPageRoute</span>(
+        builder: (context) => <span class="code-class">DetailScreen</span>(
+          message: <span class="code-string">'Data from Screen 1!'</span>,
+        ),
+      ),
+    );
+  },
+);
+
+<span class="code-comment">// Screen 2: Receiving data</span>
+<span class="code-keyword">class</span> <span class="code-class">DetailScreen</span> <span class="code-keyword">extends</span> <span class="code-class">StatelessWidget</span> {
+  <span class="code-keyword">final</span> <span class="code-class">String</span> message;
+
+  <span class="code-keyword">const</span> <span class="code-class">DetailScreen</span>({<span class="code-keyword">super</span>.key, <span class="code-keyword">required</span> <span class="code-keyword">this</span>.message});
+
+  <span class="code-meta">@override</span>
+  <span class="code-class">Widget</span> build(<span class="code-class">BuildContext</span> context) {
+    <span class="code-keyword">return</span> <span class="code-class">Scaffold</span>(
+      appBar: <span class="code-class">AppBar</span>(title: <span class="code-keyword">const</span> <span class="code-class">Text</span>(<span class="code-string">'Details'</span>)),
+      body: <span class="code-class">Center</span>(
+        child: <span class="code-class">Text</span>(message),
+      ),
+    );
+  }
+}
+</code></pre>
+                                </div>
                             </div>
-                             <div>
+                             <div class="workshop-step">
                                 <h4 class="text-xl font-semibold">3:00 PM - Displaying Dynamic Lists</h4>
                                 <p class="text-slate-600 mt-1">Using `ListView.builder` to efficiently create long lists of items. Creating custom widgets for list items.</p>
                                 <div class="mt-4 p-4 bg-slate-100 rounded-lg">
                                     <h5 class="font-semibold text-slate-800">OOP Concept: Inheritance</h5>
                                     <p class="text-slate-600 text-sm mt-1">You create a custom widget (e.g., `TodoListItem`) by having it **inherit** from `StatelessWidget`. This gives your custom widget all the standard Flutter widget features.</p>
                                 </div>
+                                <div class="phone-mockup">
+                                     <pre class="phone-screen"><code><span class="code-keyword">final</span> <span class="code-class">List</span>&lt;<span class="code-class">String</span>&gt; todos = [
+  <span class="code-string">'Buy milk'</span>, <span class="code-string">'Walk the dog'</span>, <span class="code-string">'Learn Flutter'</span>
+];
+
+<span class="code-meta">@override</span>
+<span class="code-class">Widget</span> build(<span class="code-class">BuildContext</span> context) {
+  <span class="code-keyword">return</span> <span class="code-class">Scaffold</span>(
+    appBar: <span class="code-class">AppBar</span>(title: <span class="code-keyword">const</span> <span class="code-class">Text</span>(<span class="code-string">'To-Do List'</span>)),
+    body: <span class="code-class">ListView</span>.builder(
+      itemCount: todos.length,
+      itemBuilder: (context, index) {
+        <span class="code-keyword">return</span> <span class="code-class">ListTile</span>(
+          leading: <span class="code-keyword">const</span> <span class="code-class">Icon</span>(<span class="code-class">Icons</span>.check_box_outline_blank),
+          title: <span class="code-class">Text</span>(todos[index]),
+        );
+      },
+    ),
+  );
+}
+</code></pre>
+                                </div>
                             </div>
-                             <div>
+                             <div class="workshop-step">
                                 <h4 class="text-xl font-semibold">4:00 PM - Deeper Dive into Dart OOP</h4>
                                 <p class="text-slate-600 mt-1">A focused look at creating custom classes, extending them (Inheritance), and overriding methods (Polymorphism).</p>
                             </div>
-                            <div>
+                            <div class="workshop-step">
                                 <h4 class="text-xl font-semibold">5:00 PM - Q&A and Next Steps</h4>
                                 <p class="text-slate-600 mt-1">Recap of the day and resources for further learning, including official docs and community channels.</p>
                             </div>
@@ -301,7 +477,8 @@ class _CounterPageState extends State&lt;CounterPage&gt; {
             </div>
 
             <div id="concepts" class="section">
-                 <div class="text-center">
+                 <!-- Concepts content remains the same -->
+                <div class="text-center">
                     <h2 class="text-3xl md:text-4xl font-bold text-slate-900 mb-4">Core Concepts: How It Works</h2>
                     <p class="text-lg text-slate-600 max-w-3xl mx-auto mb-12">The magic behind device communication is a protocol called MQTT.</p>
                 </div>
@@ -337,7 +514,8 @@ class _CounterPageState extends State&lt;CounterPage&gt; {
                 </div>
             </div>
             <div id="project" class="section">
-                 <div class="text-center">
+                 <!-- Project content remains the same -->
+                <div class="text-center">
                     <h2 class="text-3xl md:text-4xl font-bold text-slate-900 mb-4">Example Project: The Smart Light</h2>
                     <p class="text-lg text-slate-600 max-w-3xl mx-auto mb-12">Let's build a virtual smart light switch to see how everything connects.</p>
                 </div>
@@ -376,7 +554,8 @@ class _CounterPageState extends State&lt;CounterPage&gt; {
                 </div>
             </div>
             <div id="resources" class="section">
-                 <div class="text-center">
+                 <!-- Resources content remains the same -->
+                <div class="text-center">
                     <h2 class="text-3xl md:text-4xl font-bold text-slate-900 mb-4">Resources & Next Steps</h2>
                     <p class="text-lg text-slate-600 max-w-3xl mx-auto mb-12">Explore platforms, packages, and project ideas to continue your journey.</p>
                 </div>
@@ -442,6 +621,7 @@ class _CounterPageState extends State&lt;CounterPage&gt; {
         </main>
     </div>
 
+    <!-- Auth Modal -->
     <div id="auth-modal" class="auth-modal fixed inset-0 bg-black bg-opacity-50 items-center justify-center z-50">
         <div class="bg-white rounded-lg shadow-xl p-6 w-full max-w-sm m-4 relative">
             <button id="close-modal-btn" class="absolute top-3 right-3 text-slate-500 hover:text-slate-800 text-2xl">&times;</button>
@@ -510,27 +690,26 @@ class _CounterPageState extends State&lt;CounterPage&gt; {
                 { name: 'Azure IoT', beginnerFriendliness: 5 },
             ];
 
-            function showSection(id) {
+            window.showSection = (id) => {
                 sections.forEach(section => section.classList.toggle('active', section.id === id));
                 navLinks.forEach(link => link.classList.toggle('active', link.hash === `#${id}`));
                 if (mobileNav.value !== id) mobileNav.value = id;
+                 window.history.pushState(null, '', `#${id}`);
             }
 
             function handleNav(event) {
                 event.preventDefault();
                 const id = event.target.hash.substring(1);
                 showSection(id);
-                window.history.pushState(null, '', `#${id}`);
             }
 
             navLinks.forEach(link => link.addEventListener('click', handleNav));
             mobileNav.addEventListener('change', (e) => {
                 showSection(e.target.value);
-                window.history.pushState(null, '', `#${e.target.value}`);
             });
             
             // This listener handles hash changes, including the new workshop card link
-            window.addEventListener('hashchange', () => {
+            window.addEventListener('popstate', () => {
                 const hashId = window.location.hash ? window.location.hash.substring(1) : 'intro';
                 showSection(hashId);
             });
@@ -595,20 +774,26 @@ class _CounterPageState extends State&lt;CounterPage&gt; {
                     const targetId = e.target.dataset.copyTarget;
                     const textToCopy = document.getElementById(targetId).textContent;
                     const originalText = e.target.textContent;
-                    navigator.clipboard.writeText(textToCopy).then(() => {
+                    const tempTextArea = document.createElement('textarea');
+                    tempTextArea.value = textToCopy;
+                    document.body.appendChild(tempTextArea);
+                    tempTextArea.select();
+                    try {
+                        document.execCommand('copy');
                         e.target.textContent = 'Copied!';
                         e.target.classList.replace('bg-slate-200', 'bg-green-500');
                         e.target.classList.replace('hover:bg-slate-300', 'hover:bg-green-600');
                         e.target.classList.replace('text-slate-600', 'text-white');
-                        setTimeout(() => {
-                            e.target.textContent = originalText;
-                            e.target.classList.replace('bg-green-500', 'bg-slate-200');
-                            e.target.classList.replace('hover:bg-green-600', 'hover:bg-slate-300');
-                            e.target.classList.replace('text-white', 'text-slate-600');
-                        }, 2000);
-                    }).catch(err => {
-                        console.error('Failed to copy text: ', err);
-                    });
+                    } catch (err) {
+                        e.target.textContent = 'Failed!';
+                    }
+                    document.body.removeChild(tempTextArea);
+                    setTimeout(() => {
+                        e.target.textContent = originalText;
+                        e.target.classList.replace('bg-green-500', 'bg-slate-200');
+                        e.target.classList.replace('hover:bg-green-600', 'hover:bg-slate-300');
+                        e.target.classList.replace('text-white', 'text-slate-600');
+                    }, 2000);
                 });
             });
 
@@ -704,4 +889,3 @@ class _CounterPageState extends State&lt;CounterPage&gt; {
     </script>
 </body>
 </html>
-```
